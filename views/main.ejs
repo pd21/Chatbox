@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="style_main.css">
+<script src="chatbox.js"></script>
+</head>
+<body>
+
+   <h1>   Chatbox With Firebase! </h1>
+
+   <div id="messagebox">
+         <ul id="myList">
+         </ul>
+   </div>
+
+    <div id="name_msg">
+          <div id="contact"><i class="fa fa-user fa-3x" aria-hidden="true"></i></div>
+           <br>
+          <div id="clos"  onclick="closin()"> <i class="fa fa-window-close" aria-hidden="true"></i></div>
+          <input type="text" id="username" placeholder="Enter your name"></input>
+          <br><br>
+          <textarea id="maintext" placeholder="Enter text here"></textarea>
+          <button id="buttonclick"><i class="fa fa-chevron-circle-right"></i></button>
+    </div>
+   <div id="chat" onclick="view()">
+         <i class="fa fa-comments-o fa-3x" aria-hidden="true"></i>
+   </div>
+</body>
+
+  <script src="https://www.gstatic.com/firebasejs/5.4.1/firebase.js"></script>
+  <script>
+  // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDieTVbvrjUDvkKwh3oReCQbqfqbdsVXew",
+        authDomain: "broadcast-message-94c0a.firebaseapp.com",
+        databaseURL: "https://broadcast-message-94c0a.firebaseio.com",
+        projectId: "broadcast-message-94c0a",
+        storageBucket: "broadcast-message-94c0a.appspot.com",
+        messagingSenderId: "600945197149"
+      };
+    firebase.initializeApp(config);
+
+  </script>
+  <script>
+    $(document).ready(function(){
+
+          var maintext = document.getElementById('maintext');
+          var uername = document.getElementById('username');
+          var submitBtn = document.getElementById('submitBtn');
+          var firebaseref = firebase.database().ref();
+          firebaseref.on('value',gotData, errData);
+
+                                    $("#buttonclick").click(function(){
+
+                                      var messageText = maintext.value;
+                                      var user = username.value;
+
+                                              var data = {
+                                                name : user,
+                                                message  : messageText
+                                              }
+                                      firebaseref.push(data);
+
+                                    });
+
+    });
+
+function gotData(data){
+
+            $("ul").empty();
+            var broadcast = data.val();
+            var keys = Object.keys(broadcast);
+
+                for(var keys in broadcast ){
+                    var node = document.createElement("LI");
+                    var textnode = document.createTextNode( broadcast[keys].name + "     ::      " + broadcast[keys].message);
+                    node.appendChild(textnode);
+                    document.getElementById("myList").appendChild(node);
+                }
+  }
+
+function errData(data){
+        console.log('Error!');
+        console.log(err);
+}
+
+function view() {
+	document.getElementById('name_msg').setAttribute('style', 'display:block');
+}
+function closin() {
+	document.getElementById('name_msg').setAttribute('style', 'display:none');
+}
+
+
+
+  </script>
+
+</html>
